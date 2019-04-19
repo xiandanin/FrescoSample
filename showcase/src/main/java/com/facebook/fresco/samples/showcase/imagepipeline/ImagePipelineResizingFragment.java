@@ -186,6 +186,7 @@ public class ImagePipelineResizingFragment extends BaseShowcaseFragment {
 
     final DraweeController draweeController = Fresco.newDraweeControllerBuilder()
         .setOldController(mDraweeMain.getController())
+        .setAutoPlayAnimations(true)
         .setImageRequest(imageRequest)
         .build();
 
