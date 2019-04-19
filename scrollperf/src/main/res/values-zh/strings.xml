@@ -1,0 +1,125 @@
+<resources>
+    <string name="app_name">Fresco ScrollPerf</string>
+    <string name="action_settings">设置</string>
+    <!-- Data Source Preferences-->
+    <string name="dialog_title_data_source">数据源来源</string>
+    <string name="title_data_source">数据源来源</string>
+
+    <!-- SimpleAdapter from local array resource-->
+    <string name="label_local_uri">本地资源</string>
+    <!-- SimpleAdapter from local array resource for WebP -->
+    <string name="label_local_webp_uri">本地资源 WebP</string>
+
+    <!-- SimpleAdapter from local array resource for PNG -->
+    <string name="label_local_png_uri">本地资源 PNG</string>
+
+    <!-- Simple Adapter for local internal images-->
+    <string name="label_local_internal_photo_uri">内部存储中的照片</string>
+
+    <!-- Simple Adapter for local external images-->
+    <string name="label_local_external_photo_uri">外部存储中的照片</string>
+
+
+    <!-- Infinite SimpleAdapters-->
+    <string name="title_infinite_data_source">无限数据源</string>
+    <string name="checked_infinite_data_source_summary">数据源提供无限的Uris</string>
+    <string name="unchecked_infinite_data_source_summary">数据源提供有限的Uris</string>
+    <!-- Distinct Uris-->
+    <string name="title_distinct_uri_data_source">不同的URI (no Content Providers)</string>
+    <string name="checked_distinct_uri_data_source_summary">回收的Uri具有不同的地址</string>
+    <string name="unchecked_distinct_uri_data_source_summary">Uri对于重复图像是相同的</string>
+
+    <!-- Reuse old controller-->
+    <string name="title_reuse_old_controller">Controller重用</string>
+    <string name="checked_reuse_old_controller_summary">重用旧的Controller</string>
+    <string name="unchecked_reuse_old_controller_summary">为每个请求创建一个Controller</string>
+
+    <!-- Rounded corners -->
+    <string name="title_preferences_rounded_corners_enabled">圆角</string>
+    <string name="checked_rounded_corners_summary">圆角已启用</string>
+    <string name="unchecked_rounded_corners_summary">圆角已关闭</string>
+
+    <string name="title_preferences_rounded_as_circle_enabled">圆形</string>
+    <string name="checked_rounded_as_circle_summary">圆形已启用</string>
+    <string name="unchecked_rounded_as_circle_summary">圆形已关闭</string>
+
+    <!-- Postprocessor-->
+    <string name="title_preferences_postprocessor_type">Post-Processor类型</string>
+    <string name="title_preferences_use_postprocessor">使用Post-Processor</string>
+    <string name="dialog_title_use_postprocessor">选择Post-Processor</string>
+    <string name="unchecked_postprocessor_summary">未开启Post-Processor</string>
+    <string name="label_postprocessor_slow">使用慢速的Post-Processor</string>
+    <string name="label_postprocessor_medium">使用中速的Post-Processor</string>
+    <string name="label_postprocessor_fast">使用快速的Post-Processor</string>
+    <string name="value_postprocessor_slow_summary">模拟慢速的Post-Processor</string>
+    <string name="value_postprocessor_medium_summary">模拟中速的Post-Processor</string>
+    <string name="value_postprocessor_fast_summary">模拟快速的Post-Processor</string>
+
+    <!-- Scale Types-->
+    <string name="title_preferences_scale_type">缩放类型</string>
+    <string name="label_scale_type_none_summary">没有使用缩放类型</string>
+
+    <!-- Layout Preferences-->
+    <string name="title_recycler_layout">列表布局</string>
+
+    <!-- Auto Rotate Enabled-->
+    <string name="title_other_group">其它</string>
+
+    <string name="title_auto_rotate">自动旋转</string>
+    <string name="checked_auto_rotate_summary">根据图片元数据自动旋转</string>
+    <string name="unchecked_auto_rotate_summary">自动旋转已关闭</string>
+
+    <!-- Forced Rotation Angles -->
+    <string name="title_forced_rotation">强制旋转</string>
+    <string name="label_no_rotation">不旋转</string>
+    <string name="label_90_deg_rotation">强制旋转90度</string>
+    <string name="label_180_deg_rotation">强制旋转180度</string>
+    <string name="label_270_deg_rotation">强制旋转270度</string>
+
+    <!-- Resizing -->
+    <string name="title_decoding_thread_count">解码线程数</string>
+
+    <string name="checked_downsampling_summary">向下采样已启用</string>
+    <string name="unchecked_downsampling_summary">向下采样已关闭</string>
+    <string name="message_application_needs_restart">重新启动应用才能使配置生效</string>
+    <string name="message_restart_now">立刻关闭</string>
+    <string name="title_auto_size_override">调整图像尺寸</string>
+    <string name="checked_auto_size_override">图像会调整为指定大小</string>
+    <string name="unchecked_auto_size_override">图像会自动调整大小</string>
+    <string name="title_overriden_size_width">图片宽 (px)</string>
+    <string name="title_overriden_size_height">图片高 (px)</string>
+    <string name="size_label_format">%1$d px</string>
+
+    <!-- Fade duration -->
+    <string name="title_fade_duration">淡入淡出动画时长</string>
+    <string name="label_no_fade_duration">无动画</string>
+    <string name="label_fast_fade_duration">快速: 150ms</string>
+    <string name="label_medium_fade_duration">中速: 300ms</string>
+    <string name="label_slow_fade_duration">慢速: 600ms</string>
+
+    <!-- Draw border -->
+    <string name="title_draw_border">图像描边</string>
+    <string name="checked_draw_border_summary">描边已启用</string>
+    <string name="unchecked_draw_border_summary">描边已关闭</string>
+
+    <!-- WebP support-->
+    <string name="title_webp_support">WebP Support</string>
+    <string name="checked_webp_support_summary">直接使用WebP编码</string>
+    <string name="unchecked_webp_support_summary">在4.3以前的设备没有使用WebP编码</string>
+
+    <!-- Decode cancellation-->
+    <string name="title_decode_cancellation">取消解码</string>
+    <string name="checked_decode_cancellation_summary">取消请求同时取消解码</string>
+    <string name="unchecked_decode_cancellation_summary">取消请求不会取消解码</string>
+
+    <!-- Drawee debug overlay-->
+    <string name="title_drawee_overlay">Debug图层</string>
+    <string name="checked_drawee_overlay_summary">开启调试图层</string>
+    <string name="unchecked_drawee_overlay_summary">关闭调试图层</string>
+
+    <!-- Instrumentation-->
+    <string name="title_instrumentation">启用仪表</string>
+    <string name="checked_instrumentation_summary">仪表已启用</string>
+    <string name="unchecked_instrumentation_summary">仪表已关闭</string>
+
+</resources>

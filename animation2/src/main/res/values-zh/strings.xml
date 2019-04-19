@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fresco Animations</string>
+    <string name="cache_noop">不缓存</string>
+    <string name="cache_keep_last">保留最后一帧</string>
+    <string name="cache_naive_cache_all">缓存所有帧到Naive</string>
+    <string name="cache_fresco">Fresco的Bitmap缓存</string>
+    <string name="cache_fresco_reuse">Fresco的Bitmap缓存；重用</string>
+    <string name="invalidate_image">重绘ImageView</string>
+    <string name="cache_selector_title">缓存策略</string>
+    <string name="backend_bitmap_simple">简单Bitmap</string>
+    <string name="backend_local_drawables">本地Drawable</string>
+    <string name="backend_color">颜色</string>
+</resources>

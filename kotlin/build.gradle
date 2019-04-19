@@ -1,0 +1,76 @@
+apply plugin: 'com.android.application'
+
+buildscript {
+    ext.KOTLIN_VERSION = '1.3.20'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${KOTLIN_VERSION}"
+    }
+}
+
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        applicationId "com.facebook.fresco.samples.kotlin"
+        minSdkVersion rootProject.ext.samplesMinSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "${VERSION_NAME}"
+
+        testApplicationId "com.facebook.fresco.samples.kotlin.test"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        vectorDrawables.useSupportLibrary = true // needed for tinting
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
+        }
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    lintOptions {
+        warning 'InvalidPackage'
+        abortOnError false
+    }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'x86_64', 'arm64-v8a', 'armeabi-v7a'
+            universalApk false
+        }
+    }
+}
+
+dependencies {
+    compileOnly "com.google.code.findbugs:jsr305:${JSR_305_VERSION}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:${KOTLIN_VERSION}"
+    implementation "androidx.appcompat:appcompat:${versions.androidx.appcompat}"
+    implementation "com.google.android.material:material:${versions.material}"
+    implementation "androidx.recyclerview:recyclerview:${versions.androidx.recyclerview}"
+    implementation "androidx.cardview:cardview:${versions.androidx.cardview}"
+    implementation "com.facebook.stetho:stetho-okhttp3:${STETHO_VERSION}"
+
+    implementation "com.facebook.fresco:fresco:${VERSION_NAME}"
+    //implementation project(':drawee-backends:drawee-pipeline')
+    //implementation project(':drawee-span')
+    //implementation project(':imagepipeline-backends:imagepipeline-okhttp3')
+    //implementation project(':tools:stetho')
+    //implementation project(path: ':imagepipeline-backends:imagepipeline-okhttp3')
+}

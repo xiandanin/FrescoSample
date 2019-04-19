@@ -1,0 +1,62 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.facebook.samples.scrollperf"
+        minSdkVersion rootProject.ext.samplesMinSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
+        }
+    }
+
+    lintOptions {
+        warning 'InvalidPackage'
+        abortOnError false
+    }
+
+    sourceSets {
+        main {
+            res.srcDirs = ['src/main/res', 'src/androidTest/res']
+        }
+        androidTest {
+            res.srcDirs = ['src/androidTest/res']
+        }
+    }
+}
+
+dependencies {
+    implementation "com.facebook.fresco:fresco:${VERSION_NAME}"
+    implementation "com.facebook.fresco:animated-base:${VERSION_NAME}"
+    implementation "com.facebook.fresco:animated-gif:${VERSION_NAME}"
+    implementation "com.facebook.fresco:webpsupport:${VERSION_NAME}"
+    //implementation project(':static-webp')
+    //implementation project(':drawee-backends:drawee-pipeline')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "androidx.appcompat:appcompat:${versions.androidx.appcompat}"
+    implementation "androidx.recyclerview:recyclerview:${versions.androidx.recyclerview}"
+    implementation "androidx.preference:preference:${versions.androidx.preference}"
+
+    testImplementation "junit:junit:${JUNIT_VERSION}"
+
+    androidTestImplementation "junit:junit:${JUNIT_VERSION}"
+    androidTestImplementation "org.mockito:mockito-core:${MOCKITO_CORE_VERSION}"
+    androidTestImplementation("org.powermock:powermock-api-mockito:${POWERMOCK_VERSION}") {
+        exclude group: 'org.mockito', module: 'mockito-all'
+    }
+    androidTestImplementation "org.powermock:powermock-module-junit4:${POWERMOCK_VERSION}"
+    androidTestImplementation "org.powermock:powermock-module-junit4-rule:${POWERMOCK_VERSION}"
+    androidTestImplementation "org.powermock:powermock-classloading-xstream:${POWERMOCK_VERSION}"
+    androidTestImplementation("org.robolectric:robolectric:${ROBOLECTRIC_VERSION}") {
+        exclude group: 'commons-logging', module: 'commons-logging'
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
+}

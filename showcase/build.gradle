@@ -1,0 +1,139 @@
+apply plugin: 'com.android.application'
+
+android {
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    dexOptions {
+        maxProcessCount 2
+        javaMaxHeapSize "1g"
+    }
+
+    defaultConfig {
+        applicationId "com.facebook.fresco.samples.showcase"
+        minSdkVersion rootProject.ext.samplesMinSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "${VERSION_NAME}"
+
+        testApplicationId "com.facebook.fresco.samples.showcase.test"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        vectorDrawables.useSupportLibrary = true // needed for tinting
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-showcase.pro'
+        }
+        debug {
+            minifyEnabled false
+        }
+        instrumentation {
+            initWith debug
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-showcase.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-showcase.pro', 'proguard-test.pro'
+            matchingFallbacks = ['debug']
+        }
+    }
+
+    testBuildType "instrumentation"
+
+
+    flavorDimensions "main"
+    productFlavors {
+        normal {
+        }
+        instantRunConfig {
+            dimension "main"
+            minSdkVersion 21
+        }
+        internal {
+        }
+    }
+
+    lintOptions {
+        warning 'InvalidPackage'
+        abortOnError false
+    }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'x86_64', 'arm64-v8a', 'armeabi-v7a'
+            universalApk false
+        }
+    }
+}
+
+dependencies {
+    compileOnly "com.google.code.findbugs:jsr305:${JSR_305_VERSION}"
+
+    implementation "androidx.appcompat:appcompat:${versions.androidx.appcompat}"
+    implementation "androidx.preference:preference:${versions.androidx.preference}"
+    implementation "androidx.recyclerview:recyclerview:${versions.androidx.recyclerview}"
+    implementation "androidx.cardview:cardview:1.0.0"
+    implementation "androidx.legacy:legacy-support-v4:1.0.0"
+
+    implementation "com.google.android.material:material:1.1.0-alpha03"
+    implementation "com.facebook.stetho:stetho-okhttp3:${STETHO_VERSION}"
+
+    implementation "com.facebook.fresco:fresco:${VERSION_NAME}"
+    implementation "com.facebook.fresco:animated-base:${VERSION_NAME}"
+    implementation "com.facebook.fresco:animated-gif:${VERSION_NAME}"
+    implementation "com.facebook.fresco:animated-gif-lite:${VERSION_NAME}"
+    implementation "com.facebook.fresco:animated-webp:${VERSION_NAME}"
+    implementation "com.facebook.fresco:webpsupport:${VERSION_NAME}"
+    implementation "com.facebook.fresco:drawee-span:${VERSION_NAME}"
+    implementation "com.facebook.fresco:imagepipeline-okhttp3:${VERSION_NAME}"
+    implementation "com.facebook.fresco:stetho:${VERSION_NAME}"
+    implementation "com.facebook.fresco:flipper:${VERSION_NAME}"
+
+    //implementation project(':animated-base')
+    //implementation project(':animated-gif')
+    //implementation project(':animated-gif-lite')
+    //implementation project(':animated-webp')
+    //implementation project(':static-webp')
+    //implementation project(':native-filters')
+    //implementation project(':native-imagetranscoder')
+
+    //implementation project(':drawee-backends:drawee-pipeline')
+    //implementation project(':drawee-span')
+    //implementation project(':imagepipeline-backends:imagepipeline-okhttp3')
+    //implementation project(':tools:stetho')
+    //implementation project(path: ':imagepipeline-backends:imagepipeline-okhttp3')
+
+    implementation 'com.facebook.keyframes:keyframes:1.0'
+
+    // Litho
+    compileOnly "com.facebook.litho:litho-annotations:${versions.litho}"
+    implementation "com.facebook.litho:litho-core:${versions.litho}"
+    implementation "com.facebook.litho:litho-widget:${versions.litho}"
+    // Litho Sections
+    implementation "com.facebook.litho:litho-sections-core:${versions.litho}"
+    implementation "com.facebook.litho:litho-sections-widget:${versions.litho}"
+    compileOnly "com.facebook.litho:litho-sections-annotations:${versions.litho}"
+    annotationProcessor "com.facebook.litho:litho-sections-processor:${versions.litho}"
+
+    // Experimental Fresco Vito
+    implementation project(':vito:core')
+    implementation project(':vito:litho')
+    implementation project(':vito:options')
+
+    // Only used for the custom SVG decoder
+    implementation 'com.caverock:androidsvg:1.2.1'
+
+    // Testing-only dependencies
+    androidTestImplementation "androidx.test.espresso:espresso-core:${versions.androidx.espresso}"
+    androidTestImplementation "androidx.test:rules:${versions.androidx.test}"
+    androidTestImplementation "androidx.test:runner:${versions.androidx.test}"
+    androidTestImplementation "junit:junit:${JUNIT_VERSION}"
+
+    implementation('com.facebook.flipper:flipper:0.17.0'){
+        exclude group: 'com.facebook.fresco'
+    }
+    //implementation project(':tools:flipper')
+}

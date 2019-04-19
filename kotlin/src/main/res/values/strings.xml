@@ -1,0 +1,4 @@
+<resources>
+  <string name="app_name">Fresco Kotlin Demo</string>
+  <string name="permission_denied_toast">此示例程序需要存储权限才能加载图像</string>
+</resources>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fresco Comparison</string>
+    <string name="action_settings">设置</string>
+    <string name="select_image_loader">选择图片加载框架</string>
+    <string name="select_image_source">选择图片来源</string>
+
+    <!-- If you change the order of the elements, update the indices in the MainActivity.java -->
+    <string-array name="image_loaders">
+        <item>None</item>
+        <item>Fresco</item>
+        <item>Fresco + OkHttp</item>
+        <item>Glide</item>
+        <item>Picasso</item>
+        <item>Universal Image Loader</item>
+        <item>Volley</item>
+        <item>AQuery</item>
+    </string-array>
+
+    <!-- If you change the order of the elements, update the indices in the MainActivity.java -->
+    <string-array name="image_sources">
+        <item>None</item>
+        <item>网络资源</item>
+        <item>本地文件</item>
+    </string-array>
+</resources>

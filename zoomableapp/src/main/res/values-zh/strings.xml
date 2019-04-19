@@ -1,0 +1,4 @@
+<resources>
+  <string name="app_name">Fresco Zoomable</string>
+  <string name="allow_zoomed_swiping">允许在放大时滑动</string>
+</resources>
