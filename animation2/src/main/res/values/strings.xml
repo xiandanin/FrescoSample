@@ -1,5 +1,5 @@
 <resources>
-  <string name="app_name" translatable="false">Experimental Animations</string>
+  <string name="app_name">Experimental Animations</string>
   <!-- Samples -->
   <string name="title_simple_color">Simple color</string>
   <string name="title_simple_bitmap">Simple bitmap</string>

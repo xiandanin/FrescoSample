@@ -97,14 +97,9 @@ public class BitmapAnimationDebugFragment extends Fragment {
         public void onFrameEvicted(
             BitmapFrameCache bitmapFrameCache,
             int frameNumber) {
-          final FrameInformationHolder frameInfo = mFrameInfoMap.get(frameNumber);
+          FrameInformationHolder frameInfo = mFrameInfoMap.get(frameNumber);
           if (frameInfo != null) {
-              getActivity().runOnUiThread(new Runnable() {
-                  @Override
-                  public void run() {
-                      frameInfo.setCached(false);
-                  }
-              });
+            frameInfo.setCached(false);
           }
         }
       };
@@ -229,9 +224,9 @@ public class BitmapAnimationDebugFragment extends Fragment {
       mFrameNumber.setText(String.format("#%2d", frameNumber));
     }
 
-    public void setCached(final boolean cached) {
-         mCached.setBackgroundColor(cached ? mFrameCachedColor : mDisabledColor);
-         mCached.setText(cached ? "cached" : "");
+    public void setCached(boolean cached) {
+      mCached.setBackgroundColor(cached ? mFrameCachedColor : mDisabledColor);
+      mCached.setText(cached ? "cached" : "");
     }
 
     public void setFrameType(boolean active, @BitmapAnimationBackend.FrameType int frameType) {
