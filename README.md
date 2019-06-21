@@ -17,5 +17,5 @@ scrollperf | 列表的示例|[scrollperf.apk](https://raw.githubusercontent.com/
 zoomableapp | 图片缩放的示例|[zoomableapp.apk](https://raw.githubusercontent.com/dengyuhan/FrescoSample/master/apk/zoomableapp-internal-universal-debug.apk)
 showcase | 所有功能的示例 |[showcase.apk](https://raw.githubusercontent.com/dengyuhan/FrescoSample/master/apk/showcase-normal-universal-debug.apk)
 
-##### 编译
+## 编译
 如果编译出现`ndk-build`的异常，升级NDK即可
