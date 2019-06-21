@@ -77,6 +77,15 @@
     <string name="format_keyframes_help">只有运行Android 4.0.3（API级别15）及更高版本的设备才支持keyframes动画。</string>
     <string name="format_override_help">此示例将覆盖要用于给定图像的解码器。 如果您不想设置全局自定义解码器，则可以使用此方法。 即使禁用全局颜色解码，图像也将被正确解码。</string>
     <string name="format_datauri_help">图像也可以由数据URI提供，如下所示：</string>
+
+    <string name="vito_litho_simple">Litho 示例</string>
+
+    <string name="vito_litho_image_options_config">图像选项配置</string>
+    <string name="vito_litho_image_options_config_help">配置图像选项以更改图像的外观</string>
+
+    <string name="vito_litho_sections">Litho Sections (RecyclerView)</string>
+    <string name="vito_litho_gallery">Litho Gallery</string>
+
     <string name="imagepipeline_postprocessor_show_original">原图</string>
     <string name="format_postprocessor_duration">耗时: %.1f ms</string>
     <string name="imagepipeline_postprocessor_title">Post-Processor（修改图片）</string>
@@ -129,5 +138,6 @@
     <string name="preference_details_cpu_architecture_title">CPU架构</string>
     <string name="preference_details_android_version_title">Android版本</string>
     <string name="preference_uri_override_summary_none">&lt;未设置&gt;</string>
+    <string name="preference_details_device_name_title">设备名称</string>
 
 </resources>

@@ -71,6 +71,8 @@ public interface Hierarcher {
    * Sets up the actual image drawable for a given fresco drawable.
    *
    * @return actual image drawable for given {@code closeableImage} or null
+   * @param wasImmediate true if result was delivered immediately e.g. from cache. Affects the
+   *     decision of whether to animate transition
    */
   @Nullable
   Drawable setupActualImageDrawable(
@@ -79,7 +81,8 @@ public interface Hierarcher {
       Resources resources,
       ImageOptions imageOptions,
       CloseableReference<CloseableImage> closeableImage,
-      @Nullable ForwardingDrawable actualImageWrapperDrawable);
+      @Nullable ForwardingDrawable actualImageWrapperDrawable,
+      boolean wasImmediate);
 
   /**
    * Sets up the overlay drawable for a given fresco drawable.
@@ -89,11 +92,13 @@ public interface Hierarcher {
    * @param resources resources to be used to load drawables
    * @param imageOptions image options to be used to create the overlay
    * @param overlayDrawable a cached overlay drawable to be used instead of creating a new one
+   * @param debugOverlayDrawable a debug overlay drawable if enabled
    */
   void setupOverlayDrawable(
       FrescoContext frescoContext,
       FrescoDrawable frescoDrawable,
       Resources resources,
       ImageOptions imageOptions,
-      @Nullable Drawable overlayDrawable);
+      @Nullable Drawable overlayDrawable,
+      @Nullable Drawable debugOverlayDrawable);
 }

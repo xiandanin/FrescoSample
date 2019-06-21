@@ -15,26 +15,29 @@ import com.facebook.fresco.vito.listener.ImageListener;
 import com.facebook.fresco.vito.options.ImageOptions;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.infer.annotation.ThreadSafe;
+import javax.annotation.Nullable;
 
 @ThreadSafe
 public interface FrescoController {
   // Lifecycle methods {
   FrescoState createState(
-      Uri uri,
+      @Nullable Uri uri,
+      @Nullable MultiUri multiUri,
       ImageOptions imageOptions,
-      Object callerContext,
+      @Nullable Object callerContext,
       Resources resources,
-      ImageListener imageListener);
+      @Nullable ImageListener imageListener);
 
   FrescoState onPrepare(
       FrescoState frescoState,
-      Uri uri,
+      @Nullable Uri uri,
+      @Nullable MultiUri multiUri,
       ImageOptions imageOptions,
-      Object callerContext,
+      @Nullable Object callerContext,
       Resources resources,
-      ImageListener imageListener);
+      @Nullable ImageListener imageListener);
 
-  void onAttach(FrescoState state);
+  void onAttach(FrescoState state, @Nullable ImageListener imageListener);
 
   void onDetach(FrescoState state);
 

@@ -77,9 +77,8 @@ public class ImagePipelinePostProcessorFragment extends BaseShowcaseFragment
 
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-    final ImageUriProvider imageUriProvider = ImageUriProvider.getInstance(getContext());
     mSpinnerEntries = getSpinnerItems();
-    mUri = imageUriProvider.createSampleUri(ImageUriProvider.ImageSize.L);
+    mUri = sampleUris().createSampleUri(ImageUriProvider.ImageSize.L);
 
     mButton = (Button) view.findViewById(R.id.button);
     mDraweeMain = (SimpleDraweeView) view.findViewById(R.id.drawee_view);
@@ -117,7 +116,7 @@ public class ImagePipelinePostProcessorFragment extends BaseShowcaseFragment
   @Override
   public void showDuration(long startNs) {
     final float deltaMs = startNs / 1e6f;
-    final String message = String.format((Locale) null, getResources().getString(R.string.format_postprocessor_duration), deltaMs);
+    final String message = String.format((Locale) null, "Duration: %.1f ms", deltaMs);
     getActivity().runOnUiThread(new Runnable() {
       @Override
       public void run() {

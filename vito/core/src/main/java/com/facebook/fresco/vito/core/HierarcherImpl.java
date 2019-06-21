@@ -10,16 +10,24 @@ package com.facebook.fresco.vito.core;
 import android.content.res.Resources;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import androidx.annotation.Nullable;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.drawee.drawable.ForwardingDrawable;
 import com.facebook.drawee.drawable.ScaleTypeDrawable;
+import com.facebook.fresco.vito.drawable.VitoDrawableFactory;
 import com.facebook.fresco.vito.options.ImageOptions;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.systrace.FrescoSystrace;
 
 public class HierarcherImpl implements Hierarcher {
   private static final Drawable NOP_DRAWABLE = NopDrawable.INSTANCE;
+
+  private final VitoDrawableFactory mDrawableFactory;
+
+  public HierarcherImpl(VitoDrawableFactory drawableFactory) {
+    mDrawableFactory = drawableFactory;
+  }
 
   @Override
   public Drawable buildPlaceholderDrawable(Resources resources, ImageOptions imageOptions) {
@@ -121,21 +129,29 @@ public class HierarcherImpl implements Hierarcher {
       Resources resources,
       ImageOptions imageOptions,
       CloseableReference<CloseableImage> closeableImage,
-      @Nullable ForwardingDrawable actualImageWrapperDrawable) {
+      @Nullable ForwardingDrawable actualImageWrapperDrawable,
+      boolean wasImmediate) {
     if (FrescoSystrace.isTracing()) {
       FrescoSystrace.beginSection("HierarcherImpl#setupActualImageDrawable");
     }
     try {
-      Drawable actualDrawable =
-          frescoContext
-              .getDrawableFactory(resources)
-              .createDrawable(closeableImage.get(), imageOptions);
+      Drawable actualDrawable = mDrawableFactory.createDrawable(closeableImage.get(), imageOptions);
 
       if (actualImageWrapperDrawable == null) {
         actualImageWrapperDrawable = buildActualImageWrapper(imageOptions);
       }
       actualImageWrapperDrawable.setCurrent(actualDrawable != null ? actualDrawable : NOP_DRAWABLE);
       frescoDrawable.setImage(actualImageWrapperDrawable, closeableImage);
+
+      if (!frescoDrawable.isDefaultLayerIsOn()) {
+        if (wasImmediate || imageOptions.getFadeDurationMs() <= 0) {
+          frescoDrawable.showImageImmediately();
+        } else {
+          frescoDrawable.fadeInImage(imageOptions.getFadeDurationMs());
+        }
+      } else {
+        frescoDrawable.setPlaceholderDrawable(null);
+      }
       return actualDrawable;
     } finally {
       if (FrescoSystrace.isTracing()) {
@@ -150,10 +166,19 @@ public class HierarcherImpl implements Hierarcher {
       FrescoDrawable frescoDrawable,
       Resources resources,
       ImageOptions imageOptions,
-      @Nullable Drawable overlayDrawable) {
+      @Nullable Drawable overlayDrawable,
+      @Nullable Drawable debugOverlayDrawable) {
     if (overlayDrawable == null) {
       overlayDrawable = buildOverlayDrawable(resources, imageOptions);
     }
+    if (debugOverlayDrawable != null) {
+      if (overlayDrawable == null) {
+        overlayDrawable = debugOverlayDrawable;
+      } else {
+        overlayDrawable = new LayerDrawable(new Drawable[] {overlayDrawable, debugOverlayDrawable});
+      }
+    }
     frescoDrawable.setOverlayDrawable(overlayDrawable);
+    frescoDrawable.showOverlayImmediately();
   }
 }

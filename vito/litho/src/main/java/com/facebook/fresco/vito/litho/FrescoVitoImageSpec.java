@@ -14,6 +14,7 @@ import com.facebook.fresco.vito.core.FrescoContext;
 import com.facebook.fresco.vito.core.FrescoController;
 import com.facebook.fresco.vito.core.FrescoDrawable;
 import com.facebook.fresco.vito.core.FrescoState;
+import com.facebook.fresco.vito.core.MultiUri;
 import com.facebook.fresco.vito.listener.ImageListener;
 import com.facebook.fresco.vito.options.ImageOptions;
 import com.facebook.fresco.vito.provider.DefaultFrescoContext;
@@ -29,6 +30,7 @@ import com.facebook.litho.annotations.MountingType;
 import com.facebook.litho.annotations.OnBoundsDefined;
 import com.facebook.litho.annotations.OnCreateInitialState;
 import com.facebook.litho.annotations.OnCreateMountContent;
+import com.facebook.litho.annotations.OnDetached;
 import com.facebook.litho.annotations.OnMeasure;
 import com.facebook.litho.annotations.OnMount;
 import com.facebook.litho.annotations.OnPrepare;
@@ -48,22 +50,24 @@ public class FrescoVitoImageSpec {
 
   @OnCreateMountContent(mountingType = MountingType.DRAWABLE)
   static FrescoDrawable onCreateMountContent(Context c) {
-    return new FrescoDrawable();
+    return new FrescoDrawable(true);
   }
 
   @OnCreateInitialState
   static void onCreateInitialState(
       ComponentContext context,
       StateValue<FrescoState> lastFrescoState,
-      @Prop final Uri uri,
-      @Prop(optional = true) final ImageOptions imageOptions,
-      @Prop(optional = true) final FrescoContext frescoContext,
-      @Prop(optional = true) final Object callerContext,
-      @Prop(optional = true) final ImageListener imageListener) {
+      @Prop(optional = true) final @Nullable Uri uri,
+      @Prop(optional = true) final @Nullable MultiUri multiUri,
+      @Prop(optional = true) final @Nullable ImageOptions imageOptions,
+      @Prop(optional = true) final @Nullable FrescoContext frescoContext,
+      @Prop(optional = true) final @Nullable Object callerContext,
+      @Prop(optional = true) final @Nullable ImageListener imageListener) {
     lastFrescoState.set(
-        getController(frescoContext)
+        getController(context, frescoContext)
             .createState(
                 uri,
+                multiUri,
                 imageOptions != null ? imageOptions : ImageOptions.defaults(),
                 callerContext,
                 context.getResources(),
@@ -84,18 +88,20 @@ public class FrescoVitoImageSpec {
   @OnPrepare
   static void onPrepare(
       ComponentContext context,
-      @Prop final Uri uri,
+      @Prop(optional = true) final @Nullable Uri uri,
+      @Prop(optional = true) final @Nullable MultiUri multiUri,
       @Prop(optional = true) final @Nullable ImageOptions imageOptions,
-      @Prop(optional = true) final FrescoContext frescoContext,
-      @Prop(optional = true) final Object callerContext,
-      @Prop(optional = true) final ImageListener imageListener,
+      @Prop(optional = true) final @Nullable FrescoContext frescoContext,
+      @Prop(optional = true) final @Nullable Object callerContext,
+      @Prop(optional = true) final @Nullable ImageListener imageListener,
       @State(canUpdateLazily = true) final FrescoState lastFrescoState,
       Output<FrescoState> frescoState) {
     FrescoState maybeNewFrescoState =
-        getController(frescoContext)
+        getController(context, frescoContext)
             .onPrepare(
                 lastFrescoState,
                 uri,
+                multiUri,
                 imageOptions != null ? imageOptions : ImageOptions.defaults(),
                 callerContext,
                 context.getResources(),
@@ -110,20 +116,35 @@ public class FrescoVitoImageSpec {
   static void onMount(
       ComponentContext context,
       final FrescoDrawable frescoDrawable,
-      @Prop(optional = true) final FrescoContext frescoContext,
+      @Prop(optional = true) final @Nullable FrescoContext frescoContext,
+      @Prop(optional = true) final @Nullable ImageListener imageListener,
       @FromPrepare final FrescoState frescoState) {
     frescoState.setFrescoDrawable(frescoDrawable);
-    getController(frescoContext).onAttach(frescoState);
+    getController(context, frescoContext).onAttach(frescoState, imageListener);
   }
 
   @OnUnmount
   static void onUnmount(
       ComponentContext context,
       FrescoDrawable frescoDrawable,
-      @Prop(optional = true) final FrescoContext frescoContext,
+      @Prop(optional = true) final @Nullable FrescoContext frescoContext,
       @FromPrepare final FrescoState frescoState) {
-    frescoState.setFrescoDrawable(frescoDrawable);
-    getController(frescoContext).onDetach(frescoState);
+    FrescoContext actualFrescoContext = resolveContext(context, frescoContext);
+    if (actualFrescoContext.getExperiments().releaseInUnmount()) {
+      frescoState.setFrescoDrawable(frescoDrawable);
+      getController(context, frescoContext).onDetach(frescoState);
+    }
+  }
+
+  @OnDetached
+  static void onDetached(
+      ComponentContext context,
+      @Prop(optional = true) final @Nullable FrescoContext frescoContext,
+      @State final FrescoState frescoState) {
+    FrescoContext actualFrescoContext = resolveContext(context, frescoContext);
+    if (actualFrescoContext.getExperiments().releaseInDetach()) {
+      actualFrescoContext.getController().onDetach(frescoState);
+    }
   }
 
   @OnBoundsDefined
@@ -135,24 +156,28 @@ public class FrescoVitoImageSpec {
 
   @ShouldUpdate(onMount = true)
   static boolean shouldUpdate(
-      @Prop Diff<Uri> uri,
+      @Prop(optional = true) Diff<Uri> uri,
+      @Prop(optional = true) Diff<MultiUri> multiUri,
       @Prop(optional = true) Diff<ImageOptions> imageOptions,
       @Prop(optional = true) Diff<FrescoContext> frescoContext,
       @Prop(optional = true, resType = ResType.FLOAT) Diff<Float> imageAspectRatio) {
     return !ObjectsCompat.equals(uri.getPrevious(), uri.getNext())
+        || !ObjectsCompat.equals(multiUri.getPrevious(), multiUri.getNext())
         || !ObjectsCompat.equals(imageOptions.getPrevious(), imageOptions.getNext())
         || !ObjectsCompat.equals(imageAspectRatio.getPrevious(), imageAspectRatio.getNext())
         || !ObjectsCompat.equals(frescoContext.getPrevious(), frescoContext.getNext());
   }
 
-  static FrescoContext resolveContext(@Nullable FrescoContext contextOverride) {
+  static FrescoContext resolveContext(
+      ComponentContext context, @Nullable FrescoContext contextOverride) {
     if (contextOverride != null) {
       return contextOverride;
     }
-    return DefaultFrescoContext.get();
+    return DefaultFrescoContext.get(context.getResources());
   }
 
-  static FrescoController getController(@Nullable FrescoContext contextOverride) {
-    return resolveContext(contextOverride).getController();
+  static FrescoController getController(
+      ComponentContext context, @Nullable FrescoContext contextOverride) {
+    return resolveContext(context, contextOverride).getController();
   }
 }

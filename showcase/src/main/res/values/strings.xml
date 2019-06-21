@@ -36,13 +36,6 @@
 
   <string name="drawee_rotation_title">Rotation</string>
   <string name="drawee_rotation_help">Change the used RotationOptions using the drop-down menu on top.</string>
-  <string name="drawee_rotation_disable">disableRotation</string>
-  <string name="drawee_rotation_auto">autoRotate</string>
-  <string name="drawee_rotation_auto_render">autoRotateAtRenderTime</string>
-  <string name="drawee_rotation_no">NO_ROTATION</string>
-  <string name="drawee_rotation_90">ROTATE_90</string>
-  <string name="drawee_rotation_180">ROTATE_180</string>
-  <string name="drawee_rotation_270">ROTATE_270</string>
 
   <string name="drawee_recycler_title">Recycler View</string>
 
@@ -155,7 +148,11 @@
   <string name="vito_litho_simple">Simple Litho example</string>
   <string name="vito_litho_simple_help">Experimental Fresco Vito Litho component.</string>
 
+  <string name="vito_litho_image_options_config">Image Options configurator</string>
+  <string name="vito_litho_image_options_config_help">Configure image options to change the image\'s appearance</string>
+
   <string name="vito_litho_sections">Litho Sections (RecyclerView)</string>
+  <string name="vito_litho_gallery">Litho Gallery</string>
 
   <!-- Preferences -->
 
@@ -248,5 +245,4 @@
   <string name="switch_big_images">Big Images</string>
   <string name="drawee_hierarchy_switch_rounded">Round corners</string>
   <string name="drawee_hierarchy_switch_ninepatch">Use ninepatch</string>
-  <string name="format_postprocessor_duration">Duration: %.1f ms</string>
 </resources>

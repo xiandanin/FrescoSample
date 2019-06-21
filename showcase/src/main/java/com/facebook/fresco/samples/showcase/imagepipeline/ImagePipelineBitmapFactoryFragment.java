@@ -123,7 +123,7 @@ public class ImagePipelineBitmapFactoryFragment extends BaseShowcaseFragment {
 
   @Override
   public int getTitleId() {
-    return R.string.drawee_rotation_title;
+    return R.string.imagepipeline_bitmap_factory_title;
   }
 
   /**

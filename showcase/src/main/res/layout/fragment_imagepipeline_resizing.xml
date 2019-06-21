@@ -17,15 +17,13 @@
       android:gravity="center"
       >
     <Spinner
-        android:layout_weight="1"
         android:id="@+id/spinner_format"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
     <Spinner
-        android:layout_weight="1"
         android:id="@+id/spinner_size"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
   </LinearLayout>

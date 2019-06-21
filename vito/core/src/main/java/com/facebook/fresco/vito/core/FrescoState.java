@@ -39,12 +39,16 @@ public class FrescoState
 
   private final FrescoContext mFrescoContext;
   private final long mId;
-  private final Uri mUri;
+  private final @Nullable Uri mUri;
+  private final @Nullable MultiUri mMultiUri;
   private final ImageOptions mImageOptions;
   private final @Nullable Object mCallerContext;
   private final @Nullable CacheKey mCacheKey;
 
-  private @Nullable ImageListener mListener;
+  // ImageListener passed as @Prop to Litho component
+  private @Nullable ImageListener mImageListener;
+  // Other global and ad-hoc ImageListener(s)
+  private final @Nullable ImageListener mOtherListeners;
   private @Nullable ImageRequest mImageRequest;
   private @Px int mTargetWidthPx;
   private @Px int mTargetHeightPx;
@@ -66,6 +70,8 @@ public class FrescoState
   private @Nullable ForwardingDrawable mActualImageWrapper;
   private @Nullable Drawable mOverlayDrawable;
 
+  private @Nullable Object mExtras;
+
   // Image perf data fields
   private final RequestListener mImageOriginListener =
       new BaseRequestListener() {
@@ -81,24 +87,28 @@ public class FrescoState
   public FrescoState(
       long id,
       FrescoContext frescoContext,
-      Uri uri,
+      @Nullable Uri uri,
+      @Nullable MultiUri multiUri,
       ImageOptions imageOptions,
       Object callerContext,
       @Nullable ImageRequest imageRequest,
       @Nullable CacheKey cacheKey,
       @Nullable CloseableReference<CloseableImage> cachedImage,
       Resources resources,
-      @Nullable ImageListener listeners) {
+      @Nullable ImageListener imageListener,
+      @Nullable ImageListener otherListeners) {
     mId = id;
     mFrescoContext = frescoContext;
     mUri = uri;
+    mMultiUri = multiUri;
     mImageOptions = imageOptions;
     mCallerContext = callerContext;
     mImageRequest = imageRequest;
     mCacheKey = cacheKey;
     mCachedImage = cachedImage;
     mResources = resources;
-    mListener = listeners;
+    mImageListener = imageListener;
+    mOtherListeners = otherListeners;
   }
 
   public long getId() {
@@ -151,11 +161,12 @@ public class FrescoState
 
   @Nullable
   public synchronized CloseableReference<CloseableImage> getCachedImage() {
-    return mCachedImage;
+    return CloseableReference.cloneOrNull(mCachedImage);
   }
 
   public synchronized void setCachedImage(CloseableReference<CloseableImage> cachedImage) {
-    mCachedImage = cachedImage;
+    CloseableReference.closeSafely(mCachedImage);
+    mCachedImage = CloseableReference.cloneOrNull(cachedImage);
   }
 
   @Nullable
@@ -171,8 +182,14 @@ public class FrescoState
     mResources = resources;
   }
 
+  @Nullable
   public Uri getUri() {
     return mUri;
+  }
+
+  @Nullable
+  public MultiUri getMultiUri() {
+    return mMultiUri;
   }
 
   public void setProducerSequence(
@@ -270,8 +287,11 @@ public class FrescoState
     if (FrescoSystrace.isTracing()) {
       FrescoSystrace.beginSection("FrescoState#onSubmit");
     }
-    if (mListener != null) {
-      mListener.onSubmit(id, callerContext);
+    if (mImageListener != null) {
+      mImageListener.onSubmit(id, callerContext);
+    }
+    if (mOtherListeners != null) {
+      mOtherListeners.onSubmit(id, callerContext);
     }
     if (FrescoSystrace.isTracing()) {
       FrescoSystrace.endSection();
@@ -280,8 +300,11 @@ public class FrescoState
 
   @Override
   public void onPlaceholderSet(long id, @Nullable Drawable placeholder) {
-    if (mListener != null) {
-      mListener.onPlaceholderSet(id, placeholder);
+    if (mImageListener != null) {
+      mImageListener.onPlaceholderSet(id, placeholder);
+    }
+    if (mOtherListeners != null) {
+      mOtherListeners.onPlaceholderSet(id, placeholder);
     }
   }
 
@@ -291,36 +314,51 @@ public class FrescoState
       @ImageOrigin int imageOrigin,
       @Nullable ImageInfo imageInfo,
       @Nullable Drawable drawable) {
-    if (mListener != null) {
-      mListener.onFinalImageSet(id, imageOrigin, imageInfo, drawable);
+    if (mImageListener != null) {
+      mImageListener.onFinalImageSet(id, imageOrigin, imageInfo, drawable);
+    }
+    if (mOtherListeners != null) {
+      mOtherListeners.onFinalImageSet(id, imageOrigin, imageInfo, drawable);
     }
   }
 
   @Override
   public void onIntermediateImageSet(long id, @Nullable ImageInfo imageInfo) {
-    if (mListener != null) {
-      mListener.onIntermediateImageSet(id, imageInfo);
+    if (mImageListener != null) {
+      mImageListener.onIntermediateImageSet(id, imageInfo);
+    }
+    if (mOtherListeners != null) {
+      mOtherListeners.onIntermediateImageSet(id, imageInfo);
     }
   }
 
   @Override
   public void onIntermediateImageFailed(long id, Throwable throwable) {
-    if (mListener != null) {
-      mListener.onIntermediateImageFailed(id, throwable);
+    if (mImageListener != null) {
+      mImageListener.onIntermediateImageFailed(id, throwable);
+    }
+    if (mOtherListeners != null) {
+      mOtherListeners.onIntermediateImageFailed(id, throwable);
     }
   }
 
   @Override
-  public void onFailure(long id, @Nullable Drawable error, Throwable throwable) {
-    if (mListener != null) {
-      mListener.onFailure(id, error, throwable);
+  public void onFailure(long id, @Nullable Drawable error, @Nullable Throwable throwable) {
+    if (mImageListener != null) {
+      mImageListener.onFailure(id, error, throwable);
+    }
+    if (mOtherListeners != null) {
+      mOtherListeners.onFailure(id, error, throwable);
     }
   }
 
   @Override
   public void onRelease(long id) {
-    if (mListener != null) {
-      mListener.onRelease(id);
+    if (mImageListener != null) {
+      mImageListener.onRelease(id);
+    }
+    if (mOtherListeners != null) {
+      mOtherListeners.onRelease(id);
     }
   }
 
@@ -340,6 +378,14 @@ public class FrescoState
     mTargetHeightPx = targetHeightPx;
   }
 
+  public @Nullable ImageListener getImageListener() {
+    return mImageListener;
+  }
+
+  public void setImageListener(ImageListener imageListener) {
+    mImageListener = imageListener;
+  }
+
   @Override
   public String toString() {
     return "FrescoState{"
@@ -349,6 +395,8 @@ public class FrescoState
         + mId
         + ", mUri="
         + mUri
+        + ", mMultiUri="
+        + mMultiUri
         + ", mImageOptions="
         + mImageOptions
         + ", mCallerContext="
@@ -396,9 +444,25 @@ public class FrescoState
     if ((dataSource = mPrefetchDatasource) != null) {
       dataSource.close();
     }
+
+    CloseableReference.closeSafely(mCachedImage);
+
+    if (mFrescoContext.getExperiments().resetState()) {
+      mPrefetchDatasource = null;
+      mMainFetchDatasource = null;
+      mActualImageWrapper = null;
+    }
   }
 
   public void setImageRequest(@Nullable ImageRequest imageRequest) {
     mImageRequest = imageRequest;
+  }
+
+  public @Nullable Object getExtras() {
+    return mExtras;
+  }
+
+  public void setExtras(@Nullable Object extras) {
+    mExtras = extras;
   }
 }

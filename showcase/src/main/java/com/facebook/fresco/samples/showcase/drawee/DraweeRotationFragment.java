@@ -47,8 +47,7 @@ public class DraweeRotationFragment extends BaseShowcaseFragment {
 
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-    final ImageUriProvider imageUriProvider = ImageUriProvider.getInstance(getContext());
-    mUri = imageUriProvider.createSampleUri(ImageUriProvider.ImageSize.M);
+    mUri = sampleUris().createSampleUri(ImageUriProvider.ImageSize.M);
 
     mSimpleDraweeView = (SimpleDraweeView) view.findViewById(R.id.drawee_view);
     final Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
@@ -80,7 +79,7 @@ public class DraweeRotationFragment extends BaseShowcaseFragment {
     ImageRequest imageRequest =
         ImageRequestBuilder.newBuilderWithSource(mUri)
             .setRotationOptions(rotationOptions)
-            .setImageDecodeOptions(new ImageDecodeOptionsBuilder().setTransformToSRGB(true).build())
+            .setImageDecodeOptions(new ImageDecodeOptionsBuilder().build())
             .build();
     mSimpleDraweeView.setImageRequest(imageRequest);
   }
@@ -88,13 +87,13 @@ public class DraweeRotationFragment extends BaseShowcaseFragment {
   public class SimpleRotationOptionsAdapter extends BaseAdapter {
 
     private final Entry[] SPINNER_ENTRIES = new Entry[]{
-        new Entry(RotationOptions.disableRotation(), getResources().getString(R.string.drawee_rotation_disable)),
-        new Entry(RotationOptions.autoRotate(), getResources().getString(R.string.drawee_rotation_auto)),
-        new Entry(RotationOptions.autoRotateAtRenderTime(), getResources().getString(R.string.drawee_rotation_auto_render)),
-        new Entry(RotationOptions.forceRotation(RotationOptions.NO_ROTATION), getResources().getString(R.string.drawee_rotation_no)),
-        new Entry(RotationOptions.forceRotation(RotationOptions.ROTATE_90), getResources().getString(R.string.drawee_rotation_90)),
-        new Entry(RotationOptions.forceRotation(RotationOptions.ROTATE_180), getResources().getString(R.string.drawee_rotation_180)),
-        new Entry(RotationOptions.forceRotation(RotationOptions.ROTATE_270), getResources().getString(R.string.drawee_rotation_270)),
+        new Entry(RotationOptions.disableRotation(), "disableRotation"),
+        new Entry(RotationOptions.autoRotate(), "autoRotate"),
+        new Entry(RotationOptions.autoRotateAtRenderTime(), "autoRotateAtRenderTime"),
+        new Entry(RotationOptions.forceRotation(RotationOptions.NO_ROTATION), "NO_ROTATION"),
+        new Entry(RotationOptions.forceRotation(RotationOptions.ROTATE_90), "ROTATE_90"),
+        new Entry(RotationOptions.forceRotation(RotationOptions.ROTATE_180), "ROTATE_180"),
+        new Entry(RotationOptions.forceRotation(RotationOptions.ROTATE_270), "ROTATE_270"),
     };
 
     @Override

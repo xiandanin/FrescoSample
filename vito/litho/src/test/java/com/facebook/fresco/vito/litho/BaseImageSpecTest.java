@@ -1,4 +1,9 @@
-// Copyright 2004-present Facebook. All Rights Reserved.
+/*
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 package com.facebook.fresco.vito.litho;
 
@@ -7,6 +12,7 @@ import static org.mockito.Mockito.mock;
 
 import android.net.Uri;
 import com.facebook.fresco.vito.core.FrescoContext;
+import com.facebook.fresco.vito.core.MultiUri;
 import com.facebook.fresco.vito.options.ImageOptions;
 import com.facebook.litho.Diff;
 import com.facebook.litho.annotations.Prop;
@@ -30,11 +36,12 @@ public abstract class BaseImageSpecTest {
       };
 
   private static final Diff<Uri> NULL_URI_DIFF = new Diff<>(null, null);
+  private static final Diff<MultiUri> NULL_MULTI_URI_DIFF = new Diff<>(null, null);
   private static final Diff<ImageOptions> NULL_IMAGE_OPTIONS_DIFF = new Diff<>(null, null);
   private static final Diff<FrescoContext> NULL_FRESCO_CONTEXT_DIFF = new Diff<>(null, null);
   private static final Diff<Float> NULL_ASPECT_RATIO_DIFF = new Diff<>(null, null);
 
-  private final Method mShouldUpdateMethod;
+  protected final Method mShouldUpdateMethod;
 
   public BaseImageSpecTest() {
     final Method[] methods = getSpecClassName().getDeclaredMethods();
@@ -48,6 +55,17 @@ public abstract class BaseImageSpecTest {
   }
 
   abstract Class getSpecClassName();
+
+  public boolean invokeShouldUpdate(
+      Diff<Uri> uri,
+      Diff<MultiUri> multiUriDiff,
+      Diff<ImageOptions> imageOptions,
+      Diff<FrescoContext> frescoContext,
+      Diff<Float> imageAspectRatio)
+      throws InvocationTargetException, IllegalAccessException {
+    return (boolean)
+        mShouldUpdateMethod.invoke(null, uri, multiUriDiff, imageOptions, frescoContext, imageAspectRatio);
+  }
 
   @Test
   public void testShouldUpdateMethodChecksForEveryProp() {
@@ -77,13 +95,12 @@ public abstract class BaseImageSpecTest {
   public void test_shouldUpdate_whenNull_thenDoNothing()
       throws InvocationTargetException, IllegalAccessException {
     boolean shouldUpdate =
-        (boolean)
-            mShouldUpdateMethod.invoke(
-                null,
-                NULL_URI_DIFF,
-                NULL_IMAGE_OPTIONS_DIFF,
-                NULL_FRESCO_CONTEXT_DIFF,
-                NULL_ASPECT_RATIO_DIFF);
+        invokeShouldUpdate(
+            NULL_URI_DIFF,
+            NULL_MULTI_URI_DIFF,
+            NULL_IMAGE_OPTIONS_DIFF,
+            NULL_FRESCO_CONTEXT_DIFF,
+            NULL_ASPECT_RATIO_DIFF);
 
     assertThat(shouldUpdate).isFalse();
   }
@@ -97,26 +114,16 @@ public abstract class BaseImageSpecTest {
     Diff<Uri> diff = new Diff<>(null, uri1);
 
     boolean shouldUpdate =
-        (boolean)
-            mShouldUpdateMethod.invoke(
-                null,
-                diff,
-                NULL_IMAGE_OPTIONS_DIFF,
-                NULL_FRESCO_CONTEXT_DIFF,
-                NULL_ASPECT_RATIO_DIFF);
+        invokeShouldUpdate(
+            diff, NULL_MULTI_URI_DIFF, NULL_IMAGE_OPTIONS_DIFF, NULL_FRESCO_CONTEXT_DIFF, NULL_ASPECT_RATIO_DIFF);
 
     assertThat(shouldUpdate).isTrue();
 
     diff = new Diff<>(uri1, uri2);
 
     shouldUpdate =
-        (boolean)
-            mShouldUpdateMethod.invoke(
-                null,
-                diff,
-                NULL_IMAGE_OPTIONS_DIFF,
-                NULL_FRESCO_CONTEXT_DIFF,
-                NULL_ASPECT_RATIO_DIFF);
+        invokeShouldUpdate(
+            diff, NULL_MULTI_URI_DIFF, NULL_IMAGE_OPTIONS_DIFF, NULL_FRESCO_CONTEXT_DIFF, NULL_ASPECT_RATIO_DIFF);
 
     assertThat(shouldUpdate).isTrue();
   }
@@ -130,26 +137,14 @@ public abstract class BaseImageSpecTest {
     Diff<ImageOptions> diff = new Diff<>(null, options1);
 
     boolean shouldUpdate =
-        (boolean)
-            mShouldUpdateMethod.invoke(
-                null,
-                NULL_URI_DIFF,
-                diff,
-                NULL_FRESCO_CONTEXT_DIFF,
-                NULL_ASPECT_RATIO_DIFF);
+        invokeShouldUpdate(NULL_URI_DIFF, NULL_MULTI_URI_DIFF, diff, NULL_FRESCO_CONTEXT_DIFF, NULL_ASPECT_RATIO_DIFF);
 
     assertThat(shouldUpdate).isTrue();
 
     diff = new Diff<>(ImageOptions.create().build(), options2);
 
     shouldUpdate =
-        (boolean)
-            mShouldUpdateMethod.invoke(
-                null,
-                NULL_URI_DIFF,
-                diff,
-                NULL_FRESCO_CONTEXT_DIFF,
-                NULL_ASPECT_RATIO_DIFF);
+        invokeShouldUpdate(NULL_URI_DIFF, NULL_MULTI_URI_DIFF, diff, NULL_FRESCO_CONTEXT_DIFF, NULL_ASPECT_RATIO_DIFF);
 
     assertThat(shouldUpdate).isTrue();
   }
@@ -163,26 +158,14 @@ public abstract class BaseImageSpecTest {
     Diff<FrescoContext> diff = new Diff<>(null, context1);
 
     boolean shouldUpdate =
-        (boolean)
-            mShouldUpdateMethod.invoke(
-                null,
-                NULL_URI_DIFF,
-                NULL_IMAGE_OPTIONS_DIFF,
-                diff,
-                NULL_ASPECT_RATIO_DIFF);
+        invokeShouldUpdate(NULL_URI_DIFF, NULL_MULTI_URI_DIFF, NULL_IMAGE_OPTIONS_DIFF, diff, NULL_ASPECT_RATIO_DIFF);
 
     assertThat(shouldUpdate).isTrue();
 
     diff = new Diff<>(context1, context2);
 
     shouldUpdate =
-        (boolean)
-            mShouldUpdateMethod.invoke(
-                null,
-                NULL_URI_DIFF,
-                NULL_IMAGE_OPTIONS_DIFF,
-                diff,
-                NULL_ASPECT_RATIO_DIFF);
+        invokeShouldUpdate(NULL_URI_DIFF, NULL_MULTI_URI_DIFF, NULL_IMAGE_OPTIONS_DIFF, diff, NULL_ASPECT_RATIO_DIFF);
 
     assertThat(shouldUpdate).isTrue();
   }
@@ -196,26 +179,14 @@ public abstract class BaseImageSpecTest {
     Diff<Float> diff = new Diff<>(null, ratio1);
 
     boolean shouldUpdate =
-        (boolean)
-            mShouldUpdateMethod.invoke(
-                null,
-                NULL_URI_DIFF,
-                NULL_IMAGE_OPTIONS_DIFF,
-                NULL_FRESCO_CONTEXT_DIFF,
-                diff);
+        invokeShouldUpdate(NULL_URI_DIFF, NULL_MULTI_URI_DIFF, NULL_IMAGE_OPTIONS_DIFF, NULL_FRESCO_CONTEXT_DIFF, diff);
 
     assertThat(shouldUpdate).isTrue();
 
     diff = new Diff<>(ratio1, ratio2);
 
     shouldUpdate =
-        (boolean)
-            mShouldUpdateMethod.invoke(
-                null,
-                NULL_URI_DIFF,
-                NULL_IMAGE_OPTIONS_DIFF,
-                NULL_FRESCO_CONTEXT_DIFF,
-                diff);
+        invokeShouldUpdate(NULL_URI_DIFF, NULL_MULTI_URI_DIFF, NULL_IMAGE_OPTIONS_DIFF, NULL_FRESCO_CONTEXT_DIFF, diff);
 
     assertThat(shouldUpdate).isTrue();
   }

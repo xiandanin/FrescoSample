@@ -53,9 +53,10 @@ import com.facebook.fresco.samples.showcase.imagepipeline.ImagePipelineQualified
 import com.facebook.fresco.samples.showcase.imagepipeline.ImagePipelineRegionDecodingFragment;
 import com.facebook.fresco.samples.showcase.imagepipeline.ImagePipelineResizingFragment;
 import com.facebook.fresco.samples.showcase.imagepipeline.PartialRequestFragment;
-import com.facebook.fresco.samples.showcase.misc.ImageUriProvider;
 import com.facebook.fresco.samples.showcase.misc.WelcomeFragment;
 import com.facebook.fresco.samples.showcase.settings.SettingsFragment;
+import com.facebook.fresco.samples.showcase.vito.FrescoVitoLithoGalleryFragment;
+import com.facebook.fresco.samples.showcase.vito.FrescoVitoLithoImageOptionsConfigFragment;
 import com.facebook.fresco.samples.showcase.vito.FrescoVitoLithoSectionsFragment;
 import com.facebook.fresco.samples.showcase.vito.FrescoVitoLithoSimpleFragment;
 import com.google.android.material.navigation.NavigationView;
@@ -76,8 +77,13 @@ public class MainActivity extends AppCompatActivity
     setSupportActionBar(toolbar);
 
     DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-        this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+    ActionBarDrawerToggle toggle =
+        new ActionBarDrawerToggle(
+            this,
+            drawer,
+            toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close);
     drawer.setDrawerListener(toggle);
     toggle.syncState();
 
@@ -85,9 +91,9 @@ public class MainActivity extends AppCompatActivity
     navigationView.setNavigationItemSelectedListener(this);
 
     if (savedInstanceState == null) {
-      int selectedItem = PreferenceManager.getDefaultSharedPreferences(this).getInt(
-          KEY_SELECTED_NAVDRAWER_ITEM_ID,
-          INITIAL_NAVDRAWER_ITEM_ID);
+      int selectedItem =
+          PreferenceManager.getDefaultSharedPreferences(this)
+              .getInt(KEY_SELECTED_NAVDRAWER_ITEM_ID, INITIAL_NAVDRAWER_ITEM_ID);
       handleNavigationItemClick(selectedItem);
       navigationView.setCheckedItem(selectedItem);
     }
@@ -114,7 +120,7 @@ public class MainActivity extends AppCompatActivity
     getMenuInflater().inflate(R.menu.main, menu);
     // the support toolbar should probably do this by default
     final TypedArray styles =
-        obtainStyledAttributes(R.style.AppTheme_Toolbar, new int[]{R.attr.colorControlNormal});
+        obtainStyledAttributes(R.style.AppTheme_Toolbar, new int[] {R.attr.colorControlNormal});
     try {
       int tintColor = styles.getColor(0, Color.BLACK);
       for (int i = 0; i < menu.size(); i++) {
@@ -148,7 +154,7 @@ public class MainActivity extends AppCompatActivity
   private void handleNavigationItemClick(int itemId) {
     ShowcaseFragment fragment;
     switch (itemId) {
-      // Drawee
+        // Drawee
       case R.id.nav_drawee_simple:
         fragment = new DraweeSimpleFragment();
         break;
@@ -180,7 +186,7 @@ public class MainActivity extends AppCompatActivity
         fragment = new RetainingDataSourceSupplierFragment();
         break;
 
-      // Imagepipline
+        // Imagepipline
       case R.id.nav_imagepipeline_notification:
         fragment = new ImagePipelineNotificationFragment();
         break;
@@ -206,7 +212,7 @@ public class MainActivity extends AppCompatActivity
         fragment = new ImagePipelineRegionDecodingFragment();
         break;
 
-      // Image Formats
+        // Image Formats
       case R.id.nav_format_pjpeg:
         fragment = new ImageFormatProgressiveJpegFragment();
         break;
@@ -236,11 +242,17 @@ public class MainActivity extends AppCompatActivity
       case R.id.nav_vito_litho_simple:
         fragment = new FrescoVitoLithoSimpleFragment();
         break;
+      case R.id.nav_vito_image_options_config:
+        fragment = new FrescoVitoLithoImageOptionsConfigFragment();
+        break;
       case R.id.nav_vito_litho_sections:
         fragment = new FrescoVitoLithoSectionsFragment();
         break;
+      case R.id.nav_vito_litho_gallery:
+        fragment = new FrescoVitoLithoGalleryFragment();
+        break;
 
-      // More
+        // More
       case R.id.nav_welcome:
         fragment = new WelcomeFragment();
         break;
@@ -268,9 +280,10 @@ public class MainActivity extends AppCompatActivity
    * @param fragment The Fragment to add
    */
   private void showFragment(ShowcaseFragment fragment) {
-    final FragmentTransaction fragmentTransaction = getSupportFragmentManager()
-        .beginTransaction()
-        .replace(R.id.content_main, (Fragment) fragment);
+    final FragmentTransaction fragmentTransaction =
+        getSupportFragmentManager()
+            .beginTransaction()
+            .replace(R.id.content_main, (Fragment) fragment);
     if (fragment.getBackstackTag() != null) {
       fragmentTransaction.addToBackStack(fragment.getBackstackTag());
     }
@@ -280,13 +293,14 @@ public class MainActivity extends AppCompatActivity
   }
 
   private void maybeShowUriOverrideReminder() {
-    if (ImageUriProvider.getInstance(this).getUriOverride() == null) {
+    if (ShowcaseApplication.Companion.getImageUriProvider().getUriOverride() == null) {
       return;
     }
-    final Snackbar snackbar = Snackbar.make(
-        findViewById(R.id.content_main),
-        R.string.snackbar_uri_override_reminder_text,
-        Snackbar.LENGTH_LONG);
+    final Snackbar snackbar =
+        Snackbar.make(
+            findViewById(R.id.content_main),
+            R.string.snackbar_uri_override_reminder_text,
+            Snackbar.LENGTH_LONG);
     snackbar.setAction(
         R.string.snackbar_uri_override_reminder_change_button,
         new View.OnClickListener() {

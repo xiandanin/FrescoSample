@@ -17,7 +17,7 @@ public class FrescoExperiments {
   }
 
   public boolean checkCacheInAttach() {
-    return false;
+    return true;
   }
 
   public int mountContentPoolSize() {
@@ -39,7 +39,7 @@ public class FrescoExperiments {
   }
 
   public boolean prepareActualImageWrapperInBackground() {
-    return false;
+    return true;
   }
 
   public boolean preparePlaceholderDrawableInBackground() {
@@ -47,7 +47,7 @@ public class FrescoExperiments {
   }
 
   public boolean keepRefToMainFetchDatasouce() {
-    return false;
+    return true;
   }
 
   public @Nullable Boolean prefetchToBitmapCache() {
@@ -55,16 +55,48 @@ public class FrescoExperiments {
   }
 
   public boolean closeDatasource() {
-    return false;
+    return true;
   }
 
   public boolean cacheImageInState() {
-    return true;
+    return false;
   }
 
   public boolean shouldDiffCallerContext() {
-    return true;
+    return false;
   }
 
   public void setupPropDiffingExperiment() {}
+
+  public boolean fadeInImages() {
+    return false;
+  }
+
+  public boolean enablePropDiffing() {
+    return true;
+  }
+
+  public boolean useBindCallbacks() {
+    return false;
+  }
+
+  public boolean releaseInDetach() {
+    return false;
+  }
+
+  public boolean releaseInUnmount() {
+    return true;
+  }
+
+  public boolean useMountContentOverState() {
+    return false;
+  }
+
+  public boolean resetState() {
+    return false;
+  }
+
+  public boolean closeDatasourceOnNewResult() {
+    return true;
+  }
 }

@@ -8,13 +8,12 @@
 package com.facebook.fresco.vito.core;
 
 import android.annotation.TargetApi;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
+import com.facebook.callercontext.CallerContextVerifier;
 import com.facebook.common.internal.VisibleForTesting;
 import com.facebook.common.logging.FLog;
-import com.facebook.fresco.vito.drawable.VitoDrawableFactory;
-import com.facebook.fresco.vito.drawable.VitoDrawableFactoryImpl;
+import com.facebook.fresco.vito.core.debug.DebugOverlayFactory;
 import com.facebook.fresco.vito.listener.ImageListener;
 import com.facebook.fresco.vito.options.ImageOptions;
 import com.facebook.fresco.vito.options.RoundingOptions;
@@ -38,12 +37,12 @@ public class FrescoContext {
   private final @Nullable CallerContextVerifier mCallerContextVerifier;
   private final FrescoExperiments mExperiments;
   private final @Nullable ImageListener mGlobalImageListener;
-  private final FrescoController mController;
   private final Hierarcher mHierarcher;
   private final Executor mUiThreadExecutor;
 
+  private FrescoController mController;
+
   private @Nullable ImagePipelineFactory mImagePipelineFactory;
-  private @Nullable VitoDrawableFactory mDrawableFactory;
   private @Nullable ImageDecodeOptions mCircularImageDecodeOptions;
   private @Nullable ImageDecodeOptions mCircularImageDecodeOptionsAntiAliased;
 
@@ -67,8 +66,9 @@ public class FrescoContext {
       @Nullable CallerContextVerifier callerContextVerifier,
       FrescoExperiments frescoExperiments,
       Executor uiThreadExecutor,
-      @Nullable ImageListener globalImageListener) {
-    mController = new FrescoControllerImpl(this);
+      @Nullable ImageListener globalImageListener,
+      DebugOverlayFactory debugOverlayFactory) {
+    mController = new FrescoControllerImpl(this, debugOverlayFactory);
     mHierarcher = hierarcher;
     mCallerContextVerifier = callerContextVerifier;
     mExperiments = frescoExperiments;
@@ -101,15 +101,6 @@ public class FrescoContext {
 
   public FrescoExperiments getExperiments() {
     return mExperiments;
-  }
-
-  public synchronized VitoDrawableFactory getDrawableFactory(Resources resources) {
-    if (mDrawableFactory == null) {
-      mDrawableFactory =
-          new VitoDrawableFactoryImpl(
-              resources, getImagePipelineFactory().getAnimatedDrawableFactory(null));
-    }
-    return mDrawableFactory;
   }
 
   @Nullable
@@ -202,6 +193,10 @@ public class FrescoContext {
 
   public Executor getUiThreadExecutorService() {
     return mUiThreadExecutor;
+  }
+
+  public void setController(FrescoController controller) {
+    mController = controller;
   }
 
   public static long generateIdentifier() {
