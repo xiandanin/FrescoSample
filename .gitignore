@@ -17,3 +17,5 @@ vito/litho/build
 vito/options/build
 zoomable/build
 gestures/build
+vito/drawee-support/build
+vito/provider/build
