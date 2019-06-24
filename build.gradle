@@ -59,6 +59,7 @@ subprojects {
     repositories {
         google()
         jcenter()
+        maven { url "http://lib.gcssloop.com:8081/repository/gcssloop-central/" }
     }
 
     configurations.all {
